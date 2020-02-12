@@ -1,1 +1,3 @@
 # bggn213_classwork_w20
+
+THIW IS MY CLASSWORK FROM BGGN-213 AT UCSD
