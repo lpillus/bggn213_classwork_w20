@@ -1,3 +1,7 @@
 # bggn213_classwork_w20
 
+<<<<<<< HEAD
 THIW IS MY CLASSWORK FROM BGGN-213 W 20 AT UC San Diego.
+=======
+THIW IS MY CLASSWORK FROM BGGN-213 Winter quarter 20202 AT UC San Diego.
+>>>>>>> 097e3b0d9c50a48662e6870b3267c99a720dc8c9
