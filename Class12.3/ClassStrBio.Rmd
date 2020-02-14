@@ -7,24 +7,133 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## GitHub Documents
+## PDB Statistics
 
-This is an R Markdown format used for publishing markdown documents to GitHub. When you click the **Knit** button all R code chunks are run and a markdown file (.md) suitable for publishing to GitHub is generated.
 
-## Including Code
+Download a CSV file from the PDB site (accessible from “Analyze” > “PDB Statistics” > “by Experimental Method and Molecular Type”. Move this CSV file into your RStudio project and use it to answer the following questions:
 
-You can include R code in the document as follows:
+    Q: What percentage of structures in the PDB are solved by X-Ray and Electron Microscopy.
 
-```{r cars}
-summary(cars)
+    Q: What proportion of structures in the PDB are protein?
+
+    Q: Type HIV in the PDB website search box on the home page and determine how many HIV-1 protease structures are in the current PDB?
+
+```{r}
+stats <- read.csv("Data Export Summary.csv", row.names = 1)
+View(stats)
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
+```{r}
+round(sum(stats$Proteins) / sum(stats$Total) * 100, 2)
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```
+```{r}
+ans<- round(stats$Total / sum(stats$Total)* 100, 2)
+names(ans) <- rownames(stats)
+ans
+```
+ Q: What proportion of structures in the PDB are protein? 
+ Answer above on L.30
+ 
+ Q: Type HIV in the PDB website search box on the home page and determine how many HIV-1 protease structures are in the current PDB?
+##Using bio3d to analyze structure
+Use bio3d from CRAN
+Access from the library
+
+```{r}
+library(bio3d)
+
+pdb<- read.pdb("1hsg")
+pdb
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+```{r}
+library(bio3d)
+```
+```{r}
+aa <- get.seq("1ake_A")
+aa
+```
+
+```{r}
+b <- blast.pdb(aa)
+```
+
+Adenylate kinase structure
+
+```{r}
+hits <- NULL
+hits$pdb.id <- c('1AKE_A','4X8M_A','6S36_A','6RZE_A','4X8H_A','3HPR_A','1E4V_A','5EJE_A','1E4Y_A','3X2S_A','6HAP_A','6HAM_A','4K46_A','4NP6_A','3GMT_A','4PZL_A')
+```
+Download and parse the structures
+```{r}
+# Download releated PDB files
+files <- get.pdb(hits$pdb.id, path="pdbs", split=TRUE, gzip=TRUE)
+```
+```{r}
+# Align releated PDBs
+pdbs <- pdbaln(files, fit = TRUE, exefile="msa")
+```
+```{r}
+# Vector containing PDB codes for figure axis
+ids <- basename.pdb(pdbs$id)
+```
+```{r}
+# Draw schematic alignment
+```
+
+
+```{r}
+plot(pdbs, labels=ids)
+```
+```{r}
+library(bio3d.view)
+library(rgl)
+view(pdbs)
+rglwidget(elementId="tmp")
+```
+```{r}
+library(bio3d.view)
+```
+```{r}
+pc <- pca(pdbs)
+plot(pc)
+```
+
+```{r}
+# Calculate RMSD
+rd <- rmsd(pdbs)
+
+# Structure-based clustering
+hc.rd <- hclust(dist(rd))
+grps.rd <- cutree(hc.rd, k=3)
+
+plot(pc, 1:2, col="grey50", bg=grps.rd, pch=21, cex=1)
+```
+```{r}
+# Calculate RMSD
+rd <- rmsd(pdbs)
+
+# Structure-based clustering
+hc.rd <- hclust(dist(rd))
+grps.rd <- cutree(hc.rd, k=3)
+
+plot(pc, 1:2, col="grey50", bg=grps.rd, pch=21, cex=1)
+```
+
+
+```{r}
+# NMA of all structures
+modes <- nma(pdbs)
+```
+```{r}
+plot(modes, pdbs, col=grps.rd)
+```
+
+
+
+
+
