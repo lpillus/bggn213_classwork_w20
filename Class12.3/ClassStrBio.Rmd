@@ -20,7 +20,7 @@ Download a CSV file from the PDB site (accessible from “Analyze” > “PDB St
 
 ```{r}
 stats <- read.csv("Data Export Summary.csv", row.names = 1)
-View(stats)
+#View(stats)
 ```
 
 
@@ -59,7 +59,7 @@ aa
 ```
 
 ```{r}
-b <- blast.pdb(aa)
+#b <- blast.pdb(aa)
 ```
 
 Adenylate kinase structure
@@ -89,7 +89,7 @@ ids <- basename.pdb(pdbs$id)
 ```{r}
 plot(pdbs, labels=ids)
 ```
-```{r}
+```{r eval=FALSE}
 library(bio3d.view)
 library(rgl)
 view(pdbs)
