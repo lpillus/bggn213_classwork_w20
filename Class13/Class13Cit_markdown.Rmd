@@ -1,0 +1,41 @@
+---
+title: "StructurasedDesigne"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Download and work on HIV protease starting structure
+First download, then clean up PDB code: 1HSG. Will make separate "protein only" and "Ligand nly" PDB files
+
+```{r}
+library(bio3d)
+file.name <- get.pdb("1hsg")
+```
+We'll use `read.pdb()`, `atom.select()` and `write.pdb()` functions to make the 2 separate files (protein & ligand)
+```{r}
+read.pdb("1hsg")
+hiv <- read.pdb(file.name)
+```
+```{r}
+prot <- atom.select(hiv, "protein", value=TRUE)
+write.pdb(prot, file="1hsg_protein.pdb")
+
+```
+```{r}
+ligand <- atom.select(hiv, "ligand", value=TRUE)
+ write.pdb(ligand, file="1hsg_ligand.pdb")
+ 
+```
+
+##Read docking results
+Read in the output of docking and make a pdb filr for viewing in VMD or PyMol
+
+```{r}
+res <-read.pdb("all.pdbqt", multi=TRUE)
+write.pdb(res, "results.pdb")
+```
+
+
